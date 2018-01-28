@@ -1,43 +1,52 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
 
-public class Encounter : MonoBehaviour {
-	private List<Character> allies = new List<Character>();
-	private List<Character> enemies = new List<Character>();
+public class Encounter {
+	Dictionary<String, List<ICombatant>> factionMap 
+		= new Dictionary<string, List<ICombatant>>();
+	TurnCounter<ICombatant> turnCounter;
 
-	private List<Character> turnOrder = new List<Character>();
-	private int currentTurn = 0;
-	private void SortTurnOrder() {
-		turnOrder.Sort((Character a, Character b) => a.Speed.CompareTo(b.Speed));
-	}
+	// Properties
+	public List<ICombatant> Combatants {
+		get {
+			var result = new List<ICombatant>();
+			foreach (var faction in factionMap.Values)
+				result.AddRange(faction);
 
-	private int NextTurn() {
-		if (currentTurn >= turnOrder.Capacity) currentTurn = 0;
-		else currentTurn++;
-		return currentTurn;
-	}
-
-	public void InitializeTurnOrder() {
-		turnOrder.AddRange(allies);
-		turnOrder.AddRange(enemies);
-		SortTurnOrder();
-		currentTurn = 0;
-	}
-
-	public void AddToTurnOrder(Character character) {
-		Character currentCombatant = turnOrder[currentTurn];
-		turnOrder.Add(character);
-		SortTurnOrder();
-		if (currentCombatant != turnOrder[currentTurn]) currentTurn++;
-	}
-
-	public void UpdateTurnOrder() {
-		Character currentCombatant = turnOrder[currentTurn];
-		SortTurnOrder();
-		if (currentCombatant != turnOrder[currentTurn]) {
-			currentTurn = 0;
-			while (turnOrder[currentTurn] != currentCombatant) currentTurn++;
+			return result;
 		}
+	}
+
+	public ICombatant CurrentCombatant { get { return turnCounter.CurrentItem; } }
+	public int CurrentRound { get { return turnCounter.CurrentRound; } }
+
+	// Constructors
+	public Encounter(List<ICombatant> combatants) {
+		foreach (var combatant in combatants)
+			AddToFactionMap(combatant);
+
+		turnCounter = new TurnCounter<ICombatant>(
+			combatants,
+			(a, b) => b.Speed.CompareTo(a.Speed)
+		);
+	}
+
+	// Private methods
+	private void AddToFactionMap(ICombatant combatant) {
+		if (!factionMap.ContainsKey(combatant.Faction)) {
+			factionMap.Add(combatant.Faction, new List<ICombatant>());
+		}
+		factionMap[combatant.Faction].Add(combatant);
+	}
+
+	// Interface Methods
+	public void EndTurn() { turnCounter.EndTurn(); }
+
+	public void AddCombatant(ICombatant combatant) {
+		AddToFactionMap(combatant);
+		turnCounter.Add(combatant);
+	}
+	public bool RemoveCombatant(ICombatant combatant) {
+		return turnCounter.Remove(combatant);
 	}
 }

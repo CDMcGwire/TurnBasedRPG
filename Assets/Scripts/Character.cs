@@ -1,12 +1,13 @@
-﻿using Assets.Scripts;
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
-public class Character : MonoBehaviour {
+public class Character : MonoBehaviour, ICombatant {
 	[SerializeField]
 	private string characterName = "default";
+	[SerializeField]
+	private string faction = "default";
 	[SerializeField]
 	private bool isAlive = true;
 	[SerializeField]
@@ -18,10 +19,11 @@ public class Character : MonoBehaviour {
 	private List<Attack> attacks = new List<Attack>();
 
 	public string Name { get { return characterName; } }
-	public bool IsAlive { get { return isAlive; } }
-	public bool IsVulnerable { get { return isVulnerable; } }
+	public bool Alive { get { return isAlive; } }
+	public bool Vulnerable { get { return isVulnerable; } }
 	public int Speed { get { return speed; } }
-	
+	public String Faction { get { return faction; } }
+
 	// Comparison logic
 	public override bool Equals(object obj) {
 		if (obj == null || GetType() != obj.GetType()) return false;
