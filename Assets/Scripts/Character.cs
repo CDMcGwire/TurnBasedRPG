@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
-public class Character : MonoBehaviour, ICombatant {
+[Serializable]
+[CreateAssetMenu(fileName = "CharacterData", menuName = "Character/Data", order = 1)]
+public class Character : ScriptableObject, ICombatant {
 	[SerializeField]
 	private string characterName = "default";
 	[SerializeField]
-	private string faction = "default";
+	private CombatSprite combatSprite;
+
 	[SerializeField]
 	private bool isAlive = true;
 	[SerializeField]
@@ -22,7 +24,6 @@ public class Character : MonoBehaviour, ICombatant {
 	public bool Alive { get { return isAlive; } }
 	public bool Vulnerable { get { return isVulnerable; } }
 	public int Speed { get { return speed; } }
-	public String Faction { get { return faction; } }
 
 	// Comparison logic
 	public override bool Equals(object obj) {
@@ -33,7 +34,7 @@ public class Character : MonoBehaviour, ICombatant {
 		return Name == other.Name;
 	}
 	public override int GetHashCode() {
-		return gameObject.GetHashCode();
+		return characterName.GetHashCode();
 	}
 	public static bool operator ==(Character lhs, Character rhs) {
 		return lhs.Equals(rhs);
@@ -41,5 +42,4 @@ public class Character : MonoBehaviour, ICombatant {
 	public static bool operator !=(Character lhs, Character rhs) {
 		return !lhs.Equals(rhs);
 	}
-	
 }

@@ -1,8 +1,7 @@
-﻿using Assets.Scripts;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-[CreateAssetMenu(fileName = "Attack", menuName = "Data/Attack", order = 1)]
+[System.Serializable]
+[CreateAssetMenu(fileName = "Attack", menuName = "Combat/Attack", order = 1)]
 public class Attack : ScriptableObject {
 	[SerializeField]
 	string attackName = "default";

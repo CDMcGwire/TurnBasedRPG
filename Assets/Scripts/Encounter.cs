@@ -1,52 +1,57 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
-public class Encounter {
-	Dictionary<String, List<ICombatant>> factionMap 
-		= new Dictionary<string, List<ICombatant>>();
+[Serializable]
+[CreateAssetMenu(fileName = "EncounterData", menuName = "Encounter/Data", order = 1)]
+public class Encounter : ScriptableObject {
+	[SerializeField]
+	List<EncounterGroup> groups = new List<EncounterGroup>();
+
+	Dictionary<String, List<ICombatant>> factionMap = new Dictionary<string, List<ICombatant>>();
 	TurnCounter<ICombatant> turnCounter;
+	
+	public List<ICombatant> GetAllCombatants() {
+		var result = new List<ICombatant>();
+		foreach (var faction in factionMap.Values)
+			result.AddRange(faction);
 
-	// Properties
-	public List<ICombatant> Combatants {
-		get {
-			var result = new List<ICombatant>();
-			foreach (var faction in factionMap.Values)
-				result.AddRange(faction);
-
-			return result;
-		}
+		return result;
 	}
 
 	public ICombatant CurrentCombatant { get { return turnCounter.CurrentItem; } }
 	public int CurrentRound { get { return turnCounter.CurrentRound; } }
-
-	// Constructors
-	public Encounter(List<ICombatant> combatants) {
-		foreach (var combatant in combatants)
-			AddToFactionMap(combatant);
+	
+	// Initializer
+	void OnEnable() {
+		foreach (var group in groups) {
+			foreach (var combatant in group.Combatants) {
+				AddToFactionMap(combatant, group.Faction);
+			}
+		}
 
 		turnCounter = new TurnCounter<ICombatant>(
-			combatants,
+			GetAllCombatants(),
 			(a, b) => b.Speed.CompareTo(a.Speed)
 		);
 	}
 
 	// Private methods
-	private void AddToFactionMap(ICombatant combatant) {
-		if (!factionMap.ContainsKey(combatant.Faction)) {
-			factionMap.Add(combatant.Faction, new List<ICombatant>());
+	private void AddToFactionMap(ICombatant combatant, string faction) {
+		if (!factionMap.ContainsKey(faction)) {
+			factionMap.Add(faction, new List<ICombatant>());
 		}
-		factionMap[combatant.Faction].Add(combatant);
+		factionMap[faction].Add(combatant);
 	}
 
 	// Interface Methods
 	public void EndTurn() { turnCounter.EndTurn(); }
 
-	public void AddCombatant(ICombatant combatant) {
-		AddToFactionMap(combatant);
+	public void AddCombatant(ICombatant combatant, string faction) {
+		AddToFactionMap(combatant, faction);
 		turnCounter.Add(combatant);
 	}
-	public bool RemoveCombatant(ICombatant combatant) {
+	public bool RemoveCombatant(ICombatant combatant, string faction) {
 		return turnCounter.Remove(combatant);
 	}
 }
