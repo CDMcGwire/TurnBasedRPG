@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99aed17a7ef44384987941c2f4eeaf3e, type: 3}
+  m_Name: Punch
+  m_EditorClassIdentifier: 
+  action:
+    name: Punch
+    effects:
+    - {fileID: 11400000, guid: 9918fdea7ec509343928cf7e9dc5733c, type: 2}
+  targeter: {fileID: 11400000, guid: ffa13dbdc2852f74480f9a1d0b972446, type: 2}

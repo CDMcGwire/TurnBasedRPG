@@ -1,0 +1,15 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13644f91196dc614fab4a2033e586f74, type: 3}
+  m_Name: SimpleEncounter
+  m_EditorClassIdentifier: 
+  roster: {fileID: 11400000, guid: 5458547e81cd62c48a91f894892573b8, type: 2}
+  arena: {fileID: 114310284522834788, guid: d61f9ce2668c15345808ab43e73c5256, type: 2}
